@@ -1,0 +1,50 @@
+{
+  // Dev Container設定
+  // AI CLIツールの管理:
+  // - Claude Code: featuresで公式devcontainer feature使用
+  // - Gemini CLI: postCreateCommandでnpm経由インストール
+  // - Codex CLI: postCreateCommandでnpm経由インストール
+  "name": "${localWorkspaceFolderBasename}",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/app",
+  "overrideCommand": true,
+  "shutdownAction": "stopCompose",
+  "containerUser": "root",
+  "remoteUser": "appuser",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  // AI CLIツールの環境変数と設定ディレクトリ
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/appuser/.claude", // Claude Code認証情報
+    "CODEX_CONFIG_DIR": "/home/appuser/.codex", // Codex CLI認証情報
+    "GEMINI_CONFIG_DIR": "/home/appuser/.gemini", // Gemini CLI認証情報
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+  },
+  "mounts": [
+    "source=claude-code-config,target=/home/appuser/.claude,type=volume",
+    "source=codex-config,target=/home/appuser/.codex,type=volume",
+    "source=gemini-config,target=/home/appuser/.gemini,type=volume"
+  ],
+  // Dev Container Features
+  // - Claude Code: 公式Feature使用
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+  // AI CLIツールのインストール
+  // - Claude Code: featuresで管理（上記参照）
+  // - Gemini CLI/Codex CLI: npm経由
+  "postCreateCommand": "sudo chown -R appuser:appuser /home/appuser/.claude /home/appuser/.codex /home/appuser/.gemini 2>/dev/null || true && sudo npm install -g @google/gemini-cli@latest @openai/codex@latest && npm pkg set name=${localWorkspaceFolderBasename}",
+  "postStartCommand": "sudo mkdir -p $CLAUDE_CONFIG_DIR $CODEX_CONFIG_DIR $GEMINI_CONFIG_DIR && sudo chown -R appuser:appuser $CLAUDE_CONFIG_DIR $CODEX_CONFIG_DIR $GEMINI_CONFIG_DIR && sudo chmod 700 $CLAUDE_CONFIG_DIR $CODEX_CONFIG_DIR"
+}

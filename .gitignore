@@ -1,0 +1,43 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+credentials*.json
+*secret*
+*token*
+
+# Node / TypeScript
+node_modules/
+dist/
+build/
+
+# Data
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.sql
+*.sqlite
+*.db
+*.dump
+*.parquet
+data/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+
+*.swp
+*.swo
